@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- InstanceBegin template="/Templates/Setting.dwt" codeOutsideHTMLIsLocked="false" -->
+
+<head>
+	<!--#exec cmd="web 2860 webui getTitle"-->
+	<!-- InstanceBeginEditable name="doctitle" -->
+	<!-- InstanceEndEditable -->
+	<!--#exec cmd="web 2860 webui getHead"-->
+	<!--#exec cmd="web 2860 webui getCss"-->
+	<!-- InstanceBeginEditable name="head" -->
+	<style>
+		#topNav {
+      background-color: #ffffff;
+    }
+		.status_item {
+      box-shadow: 0 6px 10px #c8c8c8;
+      background-color: #fff;
+      border-radius: 10px;
+		}
+		.input_item {
+			width: 211px;
+			height: 18px;
+			border-radius: 5px;
+			padding-left: 15px;
+			border-color: #e9e9e9;
+			background-color: #e9e9e9;
+		}
+		.select_item {
+			width: 230px;
+			border-radius: 5px;
+			padding-left: 15px;
+			border-color: #e9e9e9;
+			background-color: #e9e9e9;
+		}
+		.btn_item {
+      box-shadow: 0 6px 10px #c8c8c8;
+      background-color: #1190ff;
+			border-radius: 20px;
+			text-align: center;
+		}
+		.fb1 {
+      color: #808080;
+    }
+    .fb3 {
+      color: #1190ff;
+    }
+	</style>
+	<script type="text/javascript">
+		logincheck(user);
+		var str;
+		//var wifi_passwd="<!--#exec cmd="web 2860 nvram WPAPSK1"-->";
+		var TouchLinkEn="<!--#exec cmd="web 2860 nvram TouchLinkEn"-->";
+		var ENWISP="<!--#exec cmd="web 2860 nvram ENWISP"-->"*1;
+		var clientMode = <!--#exec cmd="web 2860 nvram clientMode"-->+0; 
+		var passphraseKey1="<!--#exec cmd="web 2860 nvram WPAPSK1"-->";
+		if(TouchLinkEn.length==0)
+			var SSIDlen = 32;
+		else
+			var SSIDlen = 26;
+		
+		var broadcastssidarray=new Array();
+		str="<!--#exec cmd="web 2860 nvram HideSSID"-->";
+		broadcastssidarray=str.split(";");
+		
+		var encryptionType=new Array();
+		str="<!--#exec cmd="web 2860 nvram EncrypType"-->";
+		encryptionType=str.split(";");
+		
+		var authenticationMode=new Array();
+		str="<!--#exec cmd="web 2860 nvram AuthMode"-->";
+		authenticationMode=str.split(";");
+		
+		if(WiFiBand=="T")
+		{
+			var ssid_s12="<!--#exec cmd="web wifi3 nvram SSID1"-->";
+			var ssid_s15="<!--#exec cmd="web 2860 nvram SSID1"-->";
+			var ssid_s15_1="<!--#exec cmd="web rtdev nvram SSID1"-->";
+		}
+		else if(WiFiBand=="D")
+		{
+			var ssid_s15="<!--#exec cmd="web rtdev nvram SSID1"-->";
+			var ssid_s12="<!--#exec cmd="web 2860 nvram SSID1"-->";
+		}
+		else                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+			var ssid_s12="<!--#exec cmd="web 2860 nvram SSID1"-->";
+		
+		
+		
+		
+		
+		var wsMode=OperationMode;
+		step_sec=450;
+		
+		if ((wsMode==3) && (ENWISP == 1))
+		{
+			wsMode = 4;  //WISP
+		}
+		else if((wsMode == 3)&&(clientMode == 1))
+		{
+			wsMode = 2;  //CLIENT
+		}
+		//wsMode 0:AP 1:ROUTER 2:CLIENT 3:REPEATER 4:WISP
+		
+		function clickbuttonoff(id){
+			var imgobj=get_by_id(id).src;
+			var bool=imgobj.indexOf("03_03");
+			if(bool>0){
+				get_by_id(id).src="images/bgbnt_no_03.png";
+			}else{
+				get_by_id(id).src="images/bgbnt_03_03.png";
+			}
+		}	
+		
+		function changeSmartMode(id){
+			var imgobj=get_by_id(id).src;
+			var bool=imgobj.indexOf("03_03");
+			var ssid_2g=get_by_id("SSID2G").value;
+			if(bool>0){
+				get_by_id(id).src="images/bgbnt_no_03.png";
+				get_by_id("SSID5G").disabled=false;
+				if(ModelType != "Mesh")
+					get_by_id("SSID5G_2").disabled=false;
+			}else{
+				get_by_id(id).src="images/bgbnt_03_03.png";
+				get_by_id("SSID5G").value=ssid_2g;
+				get_by_id("SSID5G").disabled=true;
+				if(ModelType!= "Mesh"){
+					get_by_id("SSID5G_2").value=ssid_2g;
+					get_by_id("SSID5G_2").disabled=true;
+				}
+			}
+		}	
+		
+		function ChangeAuthMode() {
+			var f=document.wireless_basic;
+			var Cur_AuthMode=f.AuthMethod.value;
+			f.WPAPSK1.value=passphraseKey1;
+			if (Cur_AuthMode!="OPEN"){
+				get_by_id('WiFiKey').className='on';
+				get_by_id('WiFiKey_line').className='field_line on';
+			}else{
+				f.WPAPSK1.value="";
+				get_by_id('WiFiKey').className='off';
+				get_by_id('WiFiKey_line').className='field_line off';
+			}
+		}
+		
+		function Apply(){
+			var f=document.wireless_basic;
+			var wpakey=f.WPAPSK1.value;
+			var pskmode=f.AuthMethod.value;
+			var ssid2g=f.SSID2G.value;
+			
+			var patrn_num=/^[0-9]{1,60}$/;
+			var patrn_let=/^[a-zA-Z]{1,60}$/;
+		
+			var smartbools=get_by_id("smart").src; 
+			smartbools = smartbools.indexOf("03_03");
+			
+			var ssid5g=f.SSID5G.value;
+			var ssid5g_2=f.SSID5G_2.value;
+		
+			if(smartbools>0){
+				f.SSID5G_D.value=ssid2g;
+				if(ModelType != "Mesh")
+					f.SSID5G_T.value=ssid2g;
+				else
+					f.SSID5G_T.value=ssid_s15_1;
+			}
+			else{
+				f.SSID5G_D.value=ssid5g;
+				if(ModelType != "Mesh")
+					f.SSID5G_T.value=ssid5g_2;
+				else
+					f.SSID5G_T.value=ssid_s15_1;
+			}
+				
+			if(ssid2g.length==0){
+				//alert(WiFi.wifi_empty);
+				document.getElementById("error2").innerHTML="<font color='red'>"+WiFi.wifi_empty+"!</font>";
+				f.SSID2G.focus();	
+				return false;
+			}	
+			
+			//排除分号逗号回车换行4个特殊字符
+			if(!checkStr(ssid2g)){
+				//alert(WiFi.WPAPSK_ALERT);
+				document.getElementById("error2").innerHTML="<font color='red'>"+WiFi.ssid_ALERT+"!</font>";
+				f.SSID2G.focus();	
+				return false;		
+			}
+		
+			
+			if(SSIDCheck(ssid2g,SSIDlen) != 1){
+				document.getElementById("error2").innerHTML="<font color='red'> "+WiFi.SSID_TOOLONG+SSIDCheck(ssid2g,SSIDlen)+"</font>";
+				f.SSID2G.focus();	
+				return false;
+			}
+		
+			if(WiFiBand=="D")
+			{
+				if(ssid5g.length==0){
+					//alert(WiFi.wifi_empty);
+					document.getElementById("error2").innerHTML="<font color='red'>"+WiFi.wifi_empty+"!</font>";
+					f.SSID5G.focus();	
+					return false;
+				}	
+				
+				
+					//排除分号逗号回车换行4个特殊字符
+				if(!checkStr(ssid5g)){
+					//alert(WiFi.WPAPSK_ALERT);
+					document.getElementById("error2").innerHTML="<font color='red'>"+WiFi.ssid_ALERT+"!</font>";
+					f.SSID5G.focus();	
+					return false;		
+				}
+				
+				if(SSIDCheck(ssid5g,SSIDlen) != 1){
+					document.getElementById("error2").innerHTML="<font color='red'> "+WiFi.SSID_TOOLONG+SSIDCheck(ssid5g,SSIDlen)+"</font>";
+					f.SSID5G.focus();	
+					return false;
+				}
+				
+			}
+			else if(WiFiBand=="T"){
+				if(ssid5g.length==0){
+					//alert(WiFi.wifi_empty);
+					document.getElementById("error2").innerHTML="<font color='red'>"+WiFi.wifi_empty+"!</font>";
+					f.SSID5G.focus();	
+					return false;
+				}	
+				
+				
+					//排除分号逗号回车换行4个特殊字符
+				if(!checkStr(ssid5g)){
+					//alert(WiFi.WPAPSK_ALERT);
+					document.getElementById("error2").innerHTML="<font color='red'>"+WiFi.ssid_ALERT+"!</font>";
+					f.SSID5G.focus();	
+					return false;		
+				}
+				
+				if(SSIDCheck(ssid5g,SSIDlen) != 1){
+					document.getElementById("error2").innerHTML="<font color='red'> "+WiFi.SSID_TOOLONG+SSIDCheck(ssid5g,SSIDlen)+"</font>";
+					f.SSID5G.focus();	
+					return false;
+				}
+		
+				if(ssid5g_2.length==0){
+					//alert(WiFi.wifi_empty);
+					document.getElementById("error2").innerHTML="<font color='red'>"+WiFi.wifi_empty+"!</font>";
+					f.SSID5G_2.focus();	
+					return false;
+				}	
+				
+					//排除分号逗号回车换行4个特殊字符
+				if(!checkStr(ssid5g_2)){
+					//alert(WiFi.WPAPSK_ALERT);
+					document.getElementById("error2").innerHTML="<font color='red'>"+WiFi.ssid_ALERT+"!</font>";
+					f.SSID5G_2.focus();	
+					return false;		
+				}
+				
+				if(SSIDCheck(ssid5g_2,SSIDlen) != 1){
+					document.getElementById("error2").innerHTML="<font color='red'> "+WiFi.SSID_TOOLONG+SSIDCheck(ssid5g_2,SSIDlen)+"</font>";
+					f.SSID5G_2.focus();	
+					return false;
+				}
+			}
+		
+		
+			if(pskmode!="OPEN" && wpakey.length==0){
+				//alert(Safety.error_info);
+				document.getElementById("error2").innerHTML="<font color='red'>"+Safety.error_info+"!</font>";
+				f.WPAPSK1.focus();
+				return false;
+			}
+			
+			if(pskmode!="OPEN"){
+				if(wpakey.length<10){//检测密码长度不能小于10
+					document.getElementById("error2").innerHTML="<font color='red'>"+WiFi.Less+"!</font>";
+					//alert(WiFi.Less);
+					f.WPAPSK1.focus();
+					return false;
+				}
+				if(wpakey.length>63){//检测密码长度不能大于60
+					document.getElementById("error2").innerHTML="<font color='red'>"+WiFi.lot+"!</font>";
+					//alert(WiFi.lot);
+					f.WPAPSK1.focus();
+					return false;
+				}
+				var modes = 0
+				if(wpakey.length >= 10) {
+					if(/\d/.test(wpakey)) modes++;
+					if(/[a-z]/.test(wpakey)) modes++;
+					if(/[A-Z]/.test(wpakey)) modes++;
+					if(/\W/.test(wpakey)) modes++;
+				}
+				if(modes < 3){
+					document.getElementById("error2").innerHTML="<font color='red'>"+Safety.three_type+"!</font>";
+						 f.WPAPSK1.focus();
+						 return false;
+				}
+				if(/.*[\u4e00-\u9fa5]+.*$/.test(wpakey)){//排除汉字
+					//alert(Safety.Error_char);
+					document.getElementById("error2").innerHTML="<font color='red'>"+Safety.Error_char+"!</font>";
+						f.WPAPSK1.focus();
+						return false;
+				}	
+				if(!checkStr1(wpakey)){//排除分号逗号回车换行4个特殊字符
+					//alert(WiFi.WPAPSK_ALERT);
+					document.getElementById("error2").innerHTML="<font color='red'>"+WiFi.WPAPSK_ALERT+"!</font>";
+					f.WPAPSK1.focus();
+					return false;
+				}
+				if (includeSpace(wpakey))//排除空格
+				{
+					//alert(Safety.Char_int);
+					document.getElementById("error2").innerHTML="<font color='red'>"+Safety.Char_int+"!</font>";
+					f.WPAPSK1.focus();
+					return false;
+				}
+				/*
+				if(wpakey==passphraseKey1){//不能当前密码一样
+					//alert(Safety.Change_pw);
+					document.getElementById("error2").innerHTML="<font color='red'>"+Safety.Change_pw+"!</font>";
+					f.WPAPSK1.focus();
+					return false;
+				}
+				*/
+			}
+			
+			authenticationMode[0]=pskmode;
+			authenticationMode=authenticationMode.join(';');
+			f.AuthMethod25.value = authenticationMode;
+		
+			if(pskmode!="OPEN")
+				encryptionType[0]="AES";
+			else
+				encryptionType[0]="NONE";
+			encryptionType=encryptionType.join(';');
+			f.EncrypType.value=encryptionType;
+		
+			
+			Formsubmit();
+			f.submit();
+		}		
+		
+		function ssidSnyc(){
+			var f=document.wireless_basic;
+			var smartbools=get_by_id("smart").src; 
+			smartbools = smartbools.indexOf("03_03");
+			var ssid_2g=get_by_id("SSID2G").value;
+			if(smartbools>0){
+				f.SSID5G.value=ssid_2g;
+				if(ModelType != "Mesh")
+					f.SSID5G_2.value=ssid_2g;
+			}
+		}
+		
+		function init(){
+			error_log=0;
+			var Request=new Object();
+			Request=GetRequest();
+			var status=Request['status'];
+			var ssid=Request['ssid'];
+			//get_by_id("error_show").className="off";
+			if(status=='1'){
+				get_by_id("div_setok").className='on';
+				get_by_id("div_setok").innerHTML=setok_html;
+				get_by_id("div_Before_apply").className='off';
+				get_by_id("setok_ssid").innerHTML=ssid;
+				setTimeout("ProcessSetp()",10000);
+			}else if(status=='2'){
+				get_by_id("div_setok").className='on';
+				get_by_id("div_setok").innerHTML=setok_html;
+				get_by_id("div_Before_apply").className='off';
+				setTimeout("ProcessSetp()",10000);
+			}else{
+				var f=document.wireless_basic;
+				ChangeAuthMode();
+		
+				if(encryptionType[0]=="NONE"){
+					InitSelect("AuthMethod","OPEN");
+					get_by_id('WiFiKey').className='off';
+					get_by_id('WiFiKey_line').className='field_line off';
+				} else{
+					InitSelect("AuthMethod",authenticationMode[0] );
+					get_by_id("WiFiKey").className='on';
+					get_by_id('WiFiKey_line').className='field_line on';
+				} 
+		
+				get_by_id("WiFiKey").className='on';
+				get_by_id('WiFiKey_line').className='field_line on';
+		
+				f.SSID2G.value=ssid_s12;
+				f.WPAPSK1.value=passphraseKey1;
+				f.SSID5G.value=ssid_s15;
+		
+				if(WiFiBand=="T")
+				{
+					if(ModelType == "Mesh"){
+						f.SSID5G_2.value=ssid_s15_1;
+						if(ssid_s12==ssid_s15 && ssid_s12){
+							get_by_id("smart").src="images/bgbnt_03_03.png";
+							get_by_id("SSID5G").disabled=true;
+							//get_by_id("SSID5G_2").disabled=true;
+						}
+						else{
+							get_by_id("smart").src="images/bgbnt_no_03.png";
+							get_by_id("SSID5G").disabled=false;
+							//get_by_id("SSID5G_2").disabled=false;
+						}
+					}
+					else{
+						get_by_id("5G-1733").className="on";
+						get_by_id("5G-1733_line").className="field_line on";
+						f.SSID5G_2.value=ssid_s15_1;
+						if(ssid_s12==ssid_s15 && ssid_s12==ssid_s15_1){
+							get_by_id("smart").src="images/bgbnt_03_03.png";
+							get_by_id("SSID5G").disabled=true;
+							get_by_id("SSID5G_2").disabled=true;
+						}
+						else{
+							get_by_id("smart").src="images/bgbnt_no_03.png";
+							get_by_id("SSID5G").disabled=false;
+							get_by_id("SSID5G_2").disabled=false;
+						}
+					}
+				}
+				else if(WiFiBand=="D")
+				{
+					if(ssid_s12==ssid_s15){
+						get_by_id("smart").src="images/bgbnt_03_03.png";
+						get_by_id("SSID5G").disabled=true;
+					}
+					else{
+						get_by_id("smart").src="images/bgbnt_no_03.png";
+						get_by_id("SSID5G").disabled=false;
+					}
+				}
+			}
+			
+		}
+			
+		
+	</script>
+	<!-- InstanceEndEditable -->
+</head>
+
+<body onload="init();">
+	<div class="wrapper" id="wrapper" background-color="#f8f8f8">
+		<table width="100%" id="topNav" name="topNav" class="main_bg_color">
+			<tr>
+				<td>
+					<table width="100%" border="0" align="center " cellpadding="0" cellspacing="0">
+						<tr>
+							<td height="45" width="16"></td>
+							<td width="40" class="title_back">
+								<!-- InstanceBeginEditable name="Back" --><a href="#" onclick="GotoMeshWebSet('wifi.shtml')"><img
+										src="images/icon_back.png" /></a><!-- InstanceEndEditable -->
+							</td>
+							<td class="title_1" color="#1b1b1b">
+								<!-- InstanceBeginEditable name="Title" -->
+								<script type="text/javascript">
+									dw(WiFi.Wifisetup);
+								</script><!-- InstanceEndEditable -->
+							</td>
+							<td width="40"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<table id="mainbody" width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="on">
+			<tr>
+				<td>
+					<!-- InstanceBeginEditable name="Main" -->
+					<form method="POST" action="/cgi-bin/wireless.cgi" name=wireless_basic onsubmit="return Apply();"
+						target="submit_frame">
+						<input type="hidden" name="page" value="basicMesh">
+						<input type="hidden" name="newUI" value="1">
+						<input type="hidden" id="wlan_conf" name="wlan_conf" value="2860">
+						<input type="hidden" name="RFPower" value='<!--#exec cmd="web 2860 nvram TxPower"-->'>
+						<input type="hidden" name="AuthMethod25" value="">
+						<input type="hidden" name="Key1Str1" value="">
+						<input type="hidden" name="EncrypType" value="">
+						<input type="hidden" name="SSID5G_D" value="">
+						<input type="hidden" name="SSID5G_T" value="">
+						<input type="hidden" name="Channel2G" value='<!--#exec cmd="web 2860 nvram Channel"-->'>
+						<input type="hidden" name="Channel5G" value='<!--#exec cmd="web rtdev nvram Channel"-->'>
+
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" id="div_Before_apply">
+							<br />
+							<tr>
+								<td>
+									<table width="97%" border="0" align="center" cellpadding="0" cellspacing="5" class="status_item">
+										<tr>
+											<td>
+												<table width="97%" border="0" align="center" cellpadding="0" cellspacing="5">
+													<tr>
+														<td class="field_title" align="left">
+															<font size="4">
+																<script type="text/javascript">
+																	dw(Mesh.Smart_Con);
+																</script>
+															</font>
+														</td>
+														<td>
+															<table width="100%" border="0" align="right" cellpadding="0" cellspacing="0">
+																<tr>
+																	<td align="right" id="smart_text">
+																	</td>
+																	<td width="5"></td>
+																	<td width="45" align="right">
+																		<img src="images/bgbnt_03_03.png" width="40" id="smart" onclick="changeSmartMode('smart')" />
+																	</td>
+																</tr>
+															</table>
+														</td>
+													</tr>
+													<tr class="field_line">
+														<td height="1" colspan="2"></td>
+													</tr>
+													<tr>
+														<td width="60%" align="left" nowrap="nowrap" class="field_title">
+															<script type="text/javascript">
+																if (WiFiBand == "T")
+																	dw(WiFi.Wifi_name2);
+																else if (WiFiBand == "D")
+																	dw(WiFi.Wifi_name2);
+																else
+																	dw(WiFi.Wifi_name);
+															</script>:
+														</td>
+														<td align="right">
+															<input type="text" maxlength="32" id="SSID2G" name="SSID2G" value="" class="field_input input_item" onblur="ssidSnyc();" />
+														</td>
+													</tr>
+													<tr class="field_line">
+														<td height="1" colspan="2"></td>
+													</tr>
+													<tr>
+														<td width="60%" align="left" nowrap="nowrap" class="field_title">
+															<script type="text/javascript">
+																dw(WiFi.Wifi_name5);
+															</script>:
+														</td>
+														<td align="right">
+															<input type="text" maxlength="32" id="SSID5G" name="SSID5G" value="" class="field_input input_item" />
+														</td>
+													</tr>
+													<tr class="field_line">
+														<td height="1" colspan="2"></td>
+													</tr>
+													<tr id="5G-1733" class="off">
+														<td width="60%" align="left" nowrap="nowrap" class="field_title">
+															<script type="text/javascript">
+																dw(WiFi.Wifi_name5_2);
+															</script>:
+														</td>
+														<td align="right">
+															<input type="text" maxlength="32" id="SSID5G_2" name="SSID5G_2" value="" class="field_input input_item" />
+														</td>
+													</tr>
+													<tr id="5G-1733_line" class="field_line off">
+														<td height="1" colspan="2"></td>
+													</tr>
+													<tr>
+														<td align="left" class="field_title">
+															<script type="text/javascript">
+																dw(WiFi.Safe_mod);
+															</script>:
+														</td>
+														<td align="right">
+															<select name="AuthMethod" id="AuthMethod" class="field_select select_item" onChange="ChangeAuthMode();" />
+																<option value="OPEN">
+																	<script type="text/javascript">
+																		dw(WiFi.Sec_open);
+																	</script>
+																</option>
+																<option value="WPAPSKWPA2PSK">
+																	<script type="text/javascript">
+																		dw(WiFi.Sec_WPAPSKWPA2PSK);
+																	</script>
+																</option>
+																<option value="WPA2PSK">
+																	<script type="text/javascript">
+																		dw(WiFi.Sec_WPA2PSK);
+																	</script>
+																</option>
+																<option value="WPAPSK">
+																	<script type="text/javascript">
+																		dw(WiFi.Sec_WPAPSK);
+																	</script>
+																</option>
+																<!--<option value="WEPAUTO"><script type="text/javascript">dw(WiFi.Sec_WEPAUTO);</script></option>-->
+															</select>
+														</td>
+													</tr>
+													<tr class="field_line">
+														<td height="1" colspan="2"></td>
+													</tr>
+													<tr id="WiFiKey">
+														<td align="left" class="field_title">
+															<script type="text/javascript">
+																dw(WiFi.Pw_set);
+															</script>:
+														</td>
+														<td align="right" nowrap="nowrap">
+															<span id="KeyBox_2G">
+																<input id="WPAPSK1" name="WPAPSK1" type="text" class="field_input input_item" maxlength="63" value="" />
+															</span>
+														</td>
+													</tr>
+													<tr id="WiFiKey_line" class="field_line">
+														<td height="1" colspan="2" ></td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+									</table>
+									<div id="error1" name="error1" class="on" align="center">
+										<table>
+											<tr>
+												<td id="error2" name="error2" class="error_red"></td>
+											</tr>
+										</table>
+									</div>
+									<br />
+									<!-- 提交按钮 -->
+									<table border="0" align="center" cellpadding="0" cellspacing="0" class="button_table btn_item">
+										<tr class="point_change">
+											<td width="10">&nbsp;</td>
+											<td align="center" onClick="Apply()">
+												<script type="text/javascript">
+													dw(Common.Apply)
+												</script>
+											</td>
+											<td width="10">&nbsp;</td>
+										</tr>
+									</table>
+									<br />
+									<!-- 帮助、注意等 -->
+									<table width="95%" border="0" align="center" cellpadding="0" cellspacing="0" class="status_item">
+										<tr>
+											<td>
+												<table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
+													<tr>
+														<td class="field_title">
+															<script type="text/javascript">
+																dw(Common.Help)
+															</script>
+														</td>
+													</tr>
+													<tr class="field_line">
+														<td height="1"></td>
+													</tr>
+													<tr>
+													</tr>
+													<tr height="8px">
+														<td height="1"></td>
+													</tr>
+													<tr>
+														<td class="field_title">
+															<script type="text/javascript">
+																dw(Mesh.Help_Mesh)
+															</script>
+														</td>
+													</tr>
+													<tr><td>&nbsp;</td></tr>
+												</table>
+											</td>
+										</tr>
+									</table>
+									<br />
+								</td>
+							</tr>
+						</table>
+					</form>
+					<div>
+						<table width="95%" border="0" align="center" cellpadding="0" cellspacing="0" class="status_item">
+							<tr>
+								<td>
+									<table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
+										<tr>
+											<td class="field_title">
+												<img src="" alt="">
+												<font color='red'>
+													<script type="text/javascript">
+														dw(Helps.Note)
+													</script>
+												</font>
+											</td>
+										</tr>
+										<tr>
+											<td class="field_title">
+												<script type="text/javascript">
+													dw(Helps.Password)
+												</script>
+											</td>
+										</tr>
+										<tr><td>&nbsp;</td></tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div id="div_setok" class="off" style="margin-top:5%"></div>
+					<!-- InstanceEndEditable -->
+					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+						<tr>
+							<td height="65">&nbsp;</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<table id="applybody" width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="off"
+			style="margin-top:30px;">
+			<tr>
+				<td>
+
+					<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="off">
+						<tr>
+							<td width="5%"></td>
+							<td>
+								<font style="font-size:20px; color=#333">&nbsp;&nbsp;<script type="text/javascript">
+										dw(Common.Wait_sec)
+									</script>
+								</font><br><br>
+							</td>
+							<td width="5%"></td>
+						</tr>
+					</table>
+					<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+						<tr>
+							<td width="5%"></td>
+							<td id="setok_info" class="field_title16">
+								<script type="text/javascript">
+									dw(Common.Reconnect)
+								</script>
+							</td>
+							<td width="5%"></td>
+						</tr>
+					</table>
+					<table id="ssidpasswd" width="100%" border="0" align="center" cellpadding="0" cellspacing="0"
+						style="margin-top:5%;font-size:15px; color:#333;line-height:150%" class="off">
+						<tr>
+							<td width="5%"></td>
+							<td width="20%" nowrap="nowrap">
+								<script type="text/javascript">
+									dw(WiFi.Wifi_name2)
+								</script>
+							</td>
+							<td> :&nbsp;&nbsp;&nbsp; <font id="setok_ssid"></font>
+							</td>
+							<td width="5%"></td>
+						</tr>
+						<tr>
+							<td width="5%"></td>
+							<td width="20%" nowrap="nowrap">
+								<script type="text/javascript">
+									dw(WiFi.Wifi_name5)
+								</script>
+							</td>
+							<td> :&nbsp;&nbsp;&nbsp; <font id="setok_ssid1"></font>
+							</td>
+							<td width="5%"></td>
+						</tr>
+						<tr style="margin-top:5px">
+							<td width="5%"></td>
+							<td width="20%" nowrap="nowrap">
+								<script type="text/javascript">
+									dw(WiFi.Pw_set)
+								</script>
+							</td>
+							<td> :&nbsp;&nbsp;&nbsp; <font id="setok_passwd"></font>
+							</td>
+							<td width="5%"></td>
+						</tr>
+					</table>
+					<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" style=" margin-top:5%">
+						<tr>
+							<td width="10%"></td>
+							<td align="left">
+								<div class="process">
+									<div id="id_process_ing" style="height:20px; color:#06F"></div>
+									<div id="id_process_num">
+										<table width="100%" border="0" cellspacing="0" cellpadding="0">
+											<tr>
+												<td align="center">
+													<font id="id_num" color="#999999"></font>
+												</td>
+											</tr>
+										</table>
+									</div>
+								</div>
+							</td>
+							<td width="10%"></td>
+						</tr>
+					</table><br><br>
+
+					<table id="disconnectinfo" width="80%" border="0" align="center" cellpadding="0" cellspacing="0"
+						style="margin-bottom:6%; margin-top:-10px; color:#F00;font-size:16px;" class="off">
+						<tr>
+							<td class="field_title16_red">
+								<script type="text/javascript">
+									dw(Common.alertinfo)
+								</script>
+							</td>
+						</tr>
+					</table>
+
+					<table border="0" align="center" cellpadding="0" cellspacing="0" class="button_table off"
+						id="id_button_table">
+						<tr class="point_change">
+							<td width="10">&nbsp;</td>
+							<td align="center" onClick="CheckImg()">
+								<script type="text/javascript">
+									dw(Common.Back)
+								</script>
+							</td>
+							<td width="10">&nbsp;</td>
+						</tr>
+					</table>
+					<table border="0" align="center" cellpadding="0" cellspacing="0" class="off" id="app_tips">
+						<tr>
+							<td width="10">&nbsp;</td>
+							<td align="center">
+								<font style="font-size:20px; color=#333">
+									<script type="text/javascript">
+										dw(Common.Completed)
+									</script>
+								</font>
+							</td>
+							<td width="10">&nbsp;</td>
+						</tr>
+						<tr height="20"></tr>
+						<tr>
+							<td align="center" colspan="3">
+								<table border="0" align="center" cellpadding="0" cellspacing="0" class="button_table"
+									id="id_button_refresh">
+									<tr class="point_change">
+										<td width="10">&nbsp;</td>
+										<td align="center" onClick="window.location.reload()">
+											<script type="text/javascript">
+												dw(WiFi.Refresh)
+											</script>
+										</td>
+										<td width="10">&nbsp;</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+					<br>
+
+				</td>
+			</tr>
+			<tr>
+				<td>&nbsp;&nbsp;</td>
+			</tr>
+			<tr>
+				<td>&nbsp;&nbsp;</td>
+			</tr>
+			<tr>
+				<td>&nbsp;&nbsp;</td>
+			</tr>
+		</table>
+		<div id="BotMenu" name="BotMenu" class="BotMenu">
+			<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="main_bg_color">
+				<tr>
+					<td>
+						<!-- InstanceBeginEditable name="bo" -->
+						<table width="96%" border="0" align="center" cellpadding="0" cellspacing="4">
+							<tr>
+								<td width="25%" class="pointer" align="center" valign="middle" onclick="click_loading('/main.shtml')">
+									<img src="images/home_bg_no.png" alt="" height="24" /></td>
+								<td width="25%" class="pointer" align="center" valign="middle" onclick="click_loading('/wizard.shtml')">
+									<img src="images/shape_24.png" name="xd2" width="28" id="xd2" /></td>
+								<td width="25%" class="pointer" align="center" valign="middle" onclick="click_loading('/wifi.shtml')">
+									<img src="images/wifi_bg_no.png" width="30" /></td>
+								<td width="25%" class="pointer" align="center" valign="middle"
+									onclick="click_loading('/setting.shtml')"><img src="images/settings_3.png" width="24" /></td>
+							</tr>
+							<tr>
+								<td align="center" class="fb1" onclick="click_loading('/main.shtml')">
+									<script type="text/javascript">
+										dw(Common.Status);
+									</script>
+								</td>
+								<td align="center" class="fb1" onclick="click_loading('/wizard.shtml')">
+									<script type="text/javascript">
+										dw(Common.Wizard);
+									</script>
+								</td>
+								<td align="center" class="fb3" onclick="click_loading('wifi.shtml')">Wi-Fi</td>
+								<td align="center" class="fb1" onclick="click_loading('/setting.shtml')">
+									<script type="text/javascript">
+										dw(Common.Setup);
+									</script>
+								</td>
+							</tr>
+							<tr>
+								<td height="3" colspan="4"></td>
+							</tr>
+						</table>
+						<!-- InstanceEndEditable -->
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="div_loading" class="divloading off">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="div_table">
+				<tr>
+					<td height="200" align="center" valign="top"><img id="loading_img" src="images/icon_loader.gif" width="50"
+							height="50" /></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+	<iframe name="submit_frame" id="submit_frame" src="" height="0" width="0" frameborder="0" scrolling="no"></iframe>
+	<script type="text/javascript">
+		displayAppSet();
+	</script>
+
+</body>
+<!-- InstanceEnd -->
+
+</html>

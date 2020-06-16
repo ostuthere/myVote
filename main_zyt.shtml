@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- InstanceBegin template="/Templates/Setting.dwt" codeOutsideHTMLIsLocked="false" -->
+
+<head>
+	<!--#exec cmd="web 2860 webui getTitle"-->
+	<!-- InstanceBeginEditable name="doctitle" -->
+	<!--#exec cmd="web 2860 webui getHead"-->
+	<!--#exec cmd="web 2860 webui getCss"-->
+	<style type="text/css">
+		#opmode_dispaly {
+			margin-bottom:
+		}
+
+		#opmode_text {
+			color: #FFF;
+		}
+
+		body {
+			background-color: #eeeeee;
+		}
+
+		#topNav {
+      background-color: #1190ff;
+    }
+
+		.pic_div {
+			width: 290px;
+			float: left;
+			margin-left: 3px;
+			margin-right: 3px;
+			margin-top: 2px;
+			margin-bottom: 2px;
+			vertical-align: top;
+		}
+
+		.pic_dd {
+			border: 0px solid #d7dedb;
+		}
+
+		.pic_div_m {
+			width: 32%;
+			float: left;
+			margin-left: 3px;
+			margin-right: 1px;
+			margin-top: 2px;
+			margin-bottom: 2px;
+			vertical-align: top;
+		}
+
+		.pic_dd_m {
+			border: 0px solid #d7dedb;
+		}
+
+		.help-tip {
+			position: relative;
+			text-align: center;
+			background-color: #BCDBEA;
+			border-radius: 50%;
+			width: 15px;
+			height: 15px;
+			font-size: 14px;
+			line-height: 20px;
+			cursor: default;
+		}
+
+		.help-tip:before {
+			content: '?';
+			font-weight: bold;
+			color: #fff;
+		}
+
+		.help-tip:hover p {
+			display: block;
+			transform-origin: 100% 0%;
+
+			-webkit-animation: fadeIn 0.3s ease-in-out;
+			animation: fadeIn 0.3s ease-in-out;
+
+		}
+
+		.help-tip p {
+			display: none;
+			text-align: left;
+			background-color: #1E2021;
+			padding: 20px;
+			width: 300px;
+			position: absolute;
+			border-radius: 3px;
+			box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+			right: -4px;
+			color: #FFF;
+			font-size: 13px;
+			line-height: 1.4;
+		}
+
+		.help-tip p:before {
+			position: absolute;
+			content: '';
+			width: 0;
+			height: 0;
+			border: 6px solid transparent;
+			border-bottom-color: #1E2021;
+			right: 10px;
+			top: -12px;
+		}
+
+		.help-tip p:after {
+			width: 100%;
+			height: 40px;
+			content: '';
+			position: absolute;
+			top: -40px;
+			left: 0;
+		}
+
+		.nas {
+			display: block;
+			transform-origin: 100% 0%;
+			-webkit-animation: fadeIn 0.3s ease-in-out;
+			animation: fadeIn 0.3s ease-in-out;
+			text-align: left;
+			background-color: #1E2021;
+			padding: 20px;
+			width: 100px;
+			position: absolute;
+			border-radius: 3px;
+			box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+			right: -4px;
+			color: #FFF;
+			font-size: 13px;
+			line-height: 1.4;
+		}
+
+		.status_item {
+			box-shadow: 0 6px 10px #c8c8c8;
+			background-color: #fff;
+			border-radius: 10px;
+		}
+		.device_item td{
+			padding: 10px 0;
+			border-bottom: 1px solid #eeeeee;
+		}
+		.without_border td{
+			border: none;
+		}
+		#BotMenu {
+      border-top: solid #eeeeee;
+    }
+		.fb1 {
+      color: #808080;
+    }
+    .fb3 {
+      color: #1190ff;
+    }
+	</style>
+
+	<script type="text/javascript">
+	logincheck(user);
+	var LOGO2="<!--#exec cmd="web 2860 nvram LOGO2"-->";
+	var Brand="<!--#exec cmd="web 2860 nvram Brand"-->";
+	var ENWISP="<!--#exec cmd="web 2860 nvram ENWISP"-->"*1;
+	var clientMode = <!--#exec cmd="web 2860 nvram clientMode"-->+0; 
+	var time= "<!--#exec cmd="web 2860 sys uptime"-->";
+	var fwversion="<!--#exec cmd="web 2860 sys sdkVersion"-->";
+	var FW_VERSION="<!--#exec cmd="cat /etc_ro/Wireless/RT2860AP/RT2860_default_vlan|grep FW_VERSION|cut -d'=' -f2|awk {'printf $1'}"-->";
+	var wan_mac="<!--#exec cmd="web 2860 sys wanMacAddr"-->";
+	var wanstat="<!--#exec cmd="web 2860 sys wanStatus"-->";
+	var ipAddr="<!--#exec cmd="web 2860 sys lanIpAddr"-->";
+	var wanConnectionMode="<!--#exec cmd="web 2860 nvram wanConnectionMode"-->";
+	var signal_4g="";
+	var sim_status="";
+	var Imei="";
+	var Iccid="";
+	var CarrierName="";
+	var NetworkStandard="";
+	if(wanConnectionMode == "4G" || wanConnectionMode == "AUTO4G"){
+		<!--#exec cmd="api_ui.sh 4G"-->
+	}
+	
+	
+	if(FW_VERSION!=""){
+		fwversion=FW_VERSION;
+	}
+	
+	if(WiFiBand=="T"){
+		var channel2="<!--#exec cmd="web wifi3 nvram Channel"-->";
+		var WIFISSID2="<!--#exec cmd="web wifi3 nvram SSID1"-->";
+		var connecttossid2="<!--#exec cmd="web wifi3 nvram ApCliSsid"-->";
+		var EnApClient2="<!--#exec cmd="web wifi3 nvram ApCliEnable"-->"*1;
+	
+		var channel5_1="<!--#exec cmd="web 2860  nvram Channel"-->";
+		var WIFISSID5_1="<!--#exec cmd="web 2860 nvram SSID1"-->";
+		var connecttossid5_1="<!--#exec cmd="web 2860 nvram ApCliSsid"-->";
+		var EnApClient5_1="<!--#exec cmd="web 2860 nvram ApCliEnable"-->"*1;
+	
+		var channel5_2="<!--#exec cmd="web rtdev  nvram Channel"-->";
+		var WIFISSID5_2="<!--#exec cmd="web rtdev nvram SSID1"-->";
+		var connecttossid5_2="<!--#exec cmd="web rtdev nvram ApCliSsid"-->";
+		var EnApClient5_2="<!--#exec cmd="web rtdev nvram ApCliEnable"-->"*1;
+	}
+	else if(WiFiBand=="D"){
+		var channel2="<!--#exec cmd="web 2860  nvram Channel"-->";
+		var WIFISSID2="<!--#exec cmd="web 2860 nvram SSID1"-->";
+		var connecttossid2="<!--#exec cmd="web 2860 nvram ApCliSsid"-->";
+		var EnApClient2="<!--#exec cmd="web 2860 nvram ApCliEnable"-->"*1;
+	
+		var channel5="<!--#exec cmd="web rtdev  nvram Channel"-->";
+		var WIFISSID5="<!--#exec cmd="web rtdev nvram SSID1"-->";
+		var connecttossid5="<!--#exec cmd="web rtdev nvram ApCliSsid"-->";
+		var EnApClient5="<!--#exec cmd="web rtdev nvram ApCliEnable"-->"*1;
+	}
+	else{
+		var channel2="<!--#exec cmd="web 2860  nvram Channel"-->";
+		var WIFISSID2="<!--#exec cmd="web 2860 nvram SSID1"-->";
+		var connecttossid2="<!--#exec cmd="web 2860 nvram ApCliSsid"-->";
+		var EnApClient2="<!--#exec cmd="web 2860 nvram ApCliEnable"-->"*1;
+	}
+	
+	//if(channel2 == "0")  channel2=WiFi.auto; //以后加上显示当前Channel的接口， 例如 Auto/5
+	//if(channel5 == "0")  channel5=WiFi.auto;
+	//if(channel5_1 == "0")  channel5_1=WiFi.auto;
+	//if(channel5_2 == "0")  channel5_2=WiFi.auto;
+	if(WiFiBand=="T"){
+		if(channel2 == "0")  channel2="<!--#exec cmd="web wifi3 wifi Channel"-->"; //以后加上显示当前Channel的接口， 例如 Auto/5
+	}
+	else{
+		if(channel2 == "0")  channel2="<!--#exec cmd="web 2860 wifi Channel"-->"; //以后加上显示当前Channel的接口， 例如 Auto/5
+	}
+	
+	if(channel5 == "0")  channel5="<!--#exec cmd="web rtdev wifi Channel"-->"
+	if(channel5_1 == "0")  channel5_1="<!--#exec cmd="web 2860 wifi Channel"-->";
+	if(channel5_2 == "0")  channel5_2="<!--#exec cmd="web rtdev wifi Channel"-->";
+	
+	//如果5G开启了DFS，显示当前在的Channel， 不用显示配置项
+	
+	var def_dns="<!--#exec cmd="web 2860 nvram wan_primary_dns"-->";
+	var wanIP="<!--#exec cmd="web 2860 sys wanIpAddr"-->";
+	var gateWay="<!--#exec cmd="web 2860 sys wanGateway"-->";
+	var str=new Array();
+	str="<!--#exec cmd="web 2860 sys dns"-->";
+	var dns=str.split(",");
+	
+	if(dns[0]=="")dns[0]="0.0.0.0";
+	if(dns[1]==undefined)dns[1]="0.0.0.0";
+	if(wanIP=="") wanIP = "0.0.0.0";
+	if(dns[0]== dns[1]) dns[1]= def_dns;
+	if(gateWay=="") gateWay = "0.0.0.0";
+	
+	var wsMode=OperationMode;
+	if ((wsMode==3) && (ENWISP == 1))
+	{
+		wsMode = 4;  //WISP
+	}
+	else if((wsMode == 3)&&(clientMode == 1))
+	{
+		wsMode = 2;  //CLIENT
+	}
+	//wsMode 0:AP 1:ROUTER 2:CLIENT 3:REPEATER 4:WISP
+	
+	
+	function fun_speed(){
+		get_by_id('getspeed').src='live_speed.shtml?r='+ Math.floor(Math.random()*100000+1);
+	}
+	function do_nothing(){
+	}
+	function fun_status(){get_by_id('getstatus').src='live_status.shtml?r='+ Math.floor(Math.random()*100000+1);}
+	function fun_online(){get_by_id('getonline').src='live_online.shtml?r='+ Math.floor(Math.random()*100000+1);}
+	
+	function fun_mesh_write(){get_by_id('get_mesh_write').src='live_get_mesh.shtml?WriteList=1&list=main&r='+ Math.floor(Math.random()*100000+1);}
+	function fun_mesh_fresh(){get_by_id('get_mesh_fresh').src='live_get_mesh.shtml?WriteList=0&list=main&r='+ Math.floor(Math.random()*100000+1);}
+	function fun_MeshList(){get_by_id("MeshList").style.display="";}
+	//function fun_mesh(){get_by_id('get_mesh').src='live_get_mesh.shtml?list=main&r='+ Math.floor(Math.random()*100000+1);}
+	
+	var val = true;
+	function showtips(){
+		if(val){
+			get_by_id("tip-content").className = "nas";
+			val = false;
+		}
+		else{
+			get_by_id("tip-content").className = "off";
+			val = true;
+		}
+	}
+	
+	function init(){
+		if(wsMode==4||wsMode==3){
+			var wanStatus2="<!--#exec cmd="web 2860 sys wanStatus2"-->"*1;
+			var signal="<!--#exec cmd="web 2860 wifi get_cli_signal"-->";
+			if(wanStatus2==1){
+				if(signal!="")
+					get_by_id("signal_dis").innerHTML = signal+"%";
+				else
+					get_by_id("signal_dis").innerHTML = "";
+			}
+			else
+				get_by_id("signal_dis").innerHTML = "";
+		}
+		
+		window.setTimeout(fun_status, 1000);
+		window.setInterval(fun_status, 4000); //router connect
+		
+		window.setTimeout(fun_online, 2000);
+		window.setInterval(fun_online, 11000); //client 
+		
+		window.setInterval(fun_speed, 3000);
+	}
+	</script>
+</head>
+
+<body onload="init();">
+	<input type="hidden" id="wanconstat" value="0">
+	<input type="hidden" name="old_uspeed" id="old_uspeed" value="0">
+	<input type="hidden" name="old_dspeed" id="old_dspeed" value="0">
+	<div class="wrapper" id="wrapper" background-color="#f8f8f8">
+
+		<!-- 顶部logo部分 -->
+		<table width="100%" class="main_bg_color">
+			<tr>
+				<td>
+					<table class="box_3">
+						<tr>
+							<td align="left">
+								<img id="logo" src="images/WAVLINK-logo1.png" height="40" />
+							</td>
+						</tr>
+						<tr><td>&nbsp;</td></tr>
+						<script type="text/javascript">
+							if (wanConnectionMode == "4G" || wanConnectionMode == "AUTO4G")
+								dw('<tr height="30"><td width="100%"></td></tr>');
+						</script>
+						<tr>
+							<td width="95%" height="50" align="center" class="title_1">
+								<!--Mode status-->
+								<table class="box_3">
+									<tr>
+										<td align="right" valign="bottom">
+											<script type="text/javascript">
+												if (OperationMode == 3 && wanstat == 1)
+													dw('<img id="img_device" src="images/net_3.png" width="69" />');
+												else
+													document.write('<img id="img_device" src="images/net_01_1.png" width="69" />');
+											</script>
+										</td>
+										<td align="center" valign="bottom" class="main_font_txt font16">
+											<img id="img_net_line" src="" />
+											<img id="img_net4g_line" src="" width="27" class="off" />
+										</td>
+										<td align="left" valign="bottom">
+											<img src="images/net_01_1.png" id="img_router" width="69"/>
+										</td>
+									</tr>
+									<tr>
+										<td nowrap="nowrap" class="main_font_txt">
+											<script type="text/javascript">document.write(Common.ThisDevice);</script>
+										</td>
+										<!--<td align="center" class="main_font_txt"><img align="center" src="" id="net_status" title="" border="0"></img><font id="signal_dis"></font></td>-->
+										<td align="center" class="main_font_txt">
+											<font id="signal_dis"></font>
+											<font id="net_mode"></font>
+										</td>
+										<td nowrap="nowrap" class="main_font_txt" >
+											<font id="router_name">
+												<script type="text/javascript">document.write(Common.Router);</script>
+											</font>
+										</td>
+									</tr>
+									<tr><td>&nbsp;</td></tr>
+									<tr><td>&nbsp;</td></tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+
+		<!-- 中间展示部分 -->
+		<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+			<tr>
+				<td>
+					<table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
+						<tr><td>&nbsp;</td></tr>
+						<!-- Status -->
+						<tr>
+							<td colspan="3">
+								<table id="status" width="100%" border="0" cellpadding="0" cellspacing="0" border-color="#f7f7f7" class="content_main">
+									<tr>
+										<!-- 当前网络的网速 -->
+										<td width="180">
+											<table width="100%" class="status_item">
+												<tr>
+													<td align="center" colspan="4"><img src="images/bgconten11.png" width="68" height="58" /></td>
+												</tr>
+												<!-- 上传下载速度详情 -->
+												<tr>
+													<td>&nbsp;</td>
+													<td align="right" valign="bottom" nowrap="nowrap">
+														<font class="main_font2" id="speed_up"></font>
+														<font class="main_font3">KB/S</font>
+														<img src="images/up1.png" />
+													</td>
+													<td align="left" valign="bottom" nowrap="nowrap">
+														<font class="main_font2" id="speed_down"></font>
+														<font class="main_font3">KB/S</font>
+														<img src="images/down1.png" />
+													</td>
+													<td>&nbsp;</td>
+												</tr>
+												<!-- 打印文字：网速 -->
+												<tr>
+													<td align="center" class="main_info_title" colspan="4">
+														<script type="text/javascript">
+															document.write(Common.Speed);
+														</script>
+													</td>
+												</tr>
+											</table>
+										</td>
+										<td width="20">&nbsp;</td>
+										<!-- 连接该网络的终端数量 -->
+										<td width="180">
+											<table width="100%" class="status_item">
+												<tr>
+													<td align="center" valign="top" colspan="2">
+														<a id="href_1" href="cli_control.shtml">
+															<img src="images/bgconten12.png" width="68" height="58" />
+														</a>
+													</td>
+												</tr>
+												<!-- 打印文字：上网的手机电脑 -->
+												<tr>
+													<td width="32%" align="center" nowrap="nowrap" class="main_info_title" colspan="2">
+														<script type="text/javascript">
+															document.write(Common.Computer);
+														</script>
+													</td>
+												</tr>
+												<!-- 可查看正在使用该网络的终端 -->
+												<tr>
+													<!-- 打印文字：客户端列表 -->
+													<td align="right" valign="middle" class="main_font2">
+														<a id="href_3" href="cli_control.shtml">
+															<font class="main_font5">
+																<script type="text/javascript">
+																	document.write(Common.Client_List + '：');
+																</script>
+															</font>
+														</a>
+													</td>
+													<td align="left" valign="middle" class="main_font2">
+														<a id="href_2" href="cli_control.shtml">
+															<font class="main_font2" id="client_num"></font>
+														</a>
+													</td>
+												</tr>
+											</table>
+										</td>
+										<td width="20">&nbsp;</td>
+										<!-- 网络状态 -->
+										<td width="180">
+											<table width="100%" class="status_item">
+												<tr>
+													<td align="center" valign="middle">
+														<img id="internet_img" src="images/internet_off.png" width="68" height="58" />
+													</td>
+												</tr>
+												<!-- 显示当前网络状态 -->
+												<tr>
+													<td align="center">
+														<font class="main_font3" id="internetstatus"></font>
+													</td>
+												</tr>
+												<!-- 打印文字：网络 -->
+												<tr>
+													<td width="32%" align="center" class="main_info_title">
+														<script type="text/javascript">
+															document.write(Common.Internet);
+														</script>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+
+									<tr>
+										<td>
+											<div style="display:none">
+												<iframe id="getstatus" name="getstatus" marginwidth="0" marginheight="0" frameborder="0"
+													scrolling="yes" src="live_status.shtml"> </iframe>
+											</div>
+											<div style="display:none">
+												<iframe id="get_mesh_write" name="get_mesh_write" marginwidth="0" marginheight="0"
+													frameborder="0" scrolling="yes" src=""> </iframe>
+											</div>
+											<div style="display:none">
+												<iframe id="get_mesh_fresh" name="get_mesh_fresh" marginwidth="0" marginheight="0"
+													frameborder="0" scrolling="yes" src=""> </iframe>
+											</div>
+											<div style="display:none">
+												<iframe id="getspeed" name="getspeed" marginwidth="0" marginheight="0" frameborder="0"
+													scrolling="yes" src="live_speed.shtml"> </iframe>
+											</div>
+											<div style="display:none">
+												<iframe id="getonline" name="getonline" marginwidth="0" marginheight="0" frameborder="0"
+													scrolling="yes" src="live_online.shtml"> </iframe>
+											</div>
+										</td>
+									</tr>
+									<tr><td>&nbsp;</td></tr>
+									<tr><td>&nbsp;</td></tr>
+								</table>
+							</td>
+						</tr>
+						<!-- Mesh List -->
+						<tr>
+							<td>
+								<table id="MeshList" width="100%" border="0" cellspacing="0" cellpadding="0" style="display:none;">
+									<tr>
+										<td align="center">
+											<table width="97%" border="0" cellspacing="0" cellpadding="0">
+												<tr>
+													<td class="main_info_title">
+														<script type="text/javascript">
+															dw(Mesh.DeviceList);
+														</script>
+													</td>
+													<td align="right" class="main_info_title">
+														<script type="text/javascript">
+															dw('<a href="#" onclick="GotoMeshWebMain(\'main\',\'wifi_mesh.shtml\')" class="main_info_title">' +
+																Mesh.More + '</a>');
+														</script>
+													</td>
+												</tr>
+											</table>
+											<table width="98%" cellspacing="0" cellpadding="0" class="main_info_table">
+												<tr>
+													<td id="MeshList_table">
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									<tr>
+										<td height="5" align="center"></td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<!-- Device info -->
+						<tr>
+							<td width="50%">
+								<table width="100%" border="0" cellspacing="1" cellpadding="0" class="main_info status_item">
+									<tr>
+										<td align="center">
+											<table width="95%" border="0" cellspacing="1" cellpadding="0" class="device_item">
+												<tr >
+													<td align="left" width="150">
+														<script type="text/javascript">
+															document.write(Common.WAN_Type);
+														</script>
+													</td>
+													<td align="right" class="main_info_value" id="wan_type">
+														<script type="text/javascript">
+															if (wsMode == 0) {
+																if (wanConnectionMode == "STATIC")
+																	document.write(Common.AP_mode_static);
+																else
+																	document.write(Common.AP_mode_dhcp);
+															}
+															if (wsMode == 1) {
+																if (wanConnectionMode == "PPPOE")
+																	document.write(Common.Router_mode_pppoe);
+																else if (wanConnectionMode == "STATIC")
+																	document.write(Common.Router_mode_static);
+																else if (wanConnectionMode == "4G")
+																	document.write(Common.Router_mode_4G);
+																else
+																	document.write(Common.Router_mode_dhcp);
+															}
+															if (wsMode == 2)
+																document.write(Common.Client_mode);
+															if (wsMode == 3) {
+																if (wanConnectionMode == "STATIC")
+																	document.write(Common.Rep_mode_static);
+																else
+																	document.write(Common.Rep_mode_dhcp);
+															}
+															if (wsMode == 4) {
+																document.write(Common.Wisp_mode);
+															}
+														</script>
+													</td>
+												</tr>
+			
+												<tr>
+													<td align="left" width="150">
+														<script type="text/javascript">
+															if (wsMode == 1 || wsMode == 4)
+																document.write(Common.wan_ip);
+															else
+																document.write(Common.Gateway);
+														</script>
+													</td>
+													<td align="right" class="main_info_value" id="gateway">
+														<script type="text/javascript">
+															//if(OperationMode==1 ||(wanstat!=1 && OperationMode!=1 ))
+															if (wsMode == 1 || (wsMode == 4))
+																document.write(wanIP);
+															else
+																document.write(gateWay);
+														</script>
+													</td>
+												</tr>
+			
+												<tr>
+													<td align="left" width="150">
+														<script type="text/javascript">
+															document.write(Common.WAN_MAC);
+														</script>
+													</td>
+													<td align="right" class="main_info_value">
+														<script type="text/javascript">
+															document.write(wan_mac)
+														</script>
+													</td>
+												</tr>
+			
+												<tr>
+													<td align="left" width="150">
+														<script type="text/javascript">
+															document.write(Common.Device_IP);
+														</script>
+													</td>
+													<td align="right" class="main_info_value" id="device_ip">
+														<script type="text/javascript">
+															//if(OperationMode==1 ||(wanstat!=1 && OperationMode!=1 ))
+															if (wsMode == 1 || (wsMode == 4))
+																document.write(ipAddr)
+															else
+																document.write(wanIP);
+														</script>
+													</td>
+												</tr>
+			
+												<tr>
+													<td align="left" width="150">DNS1</td>
+													<td align="right" class="main_info_value" id="">
+														<script type="text/javascript">
+															document.write(dns[0]);
+														</script>
+													</td>
+												</tr>
+			
+												<tr class="without_border">
+													<td align="left" width="150">DNS2</td>
+													<td align="right" class="main_info_value" id="">
+														<script type="text/javascript">
+															document.write(dns[1]);
+														</script>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</table>
+							</td>
+							<td>&nbsp;</td>
+							<td width="50%">
+								<table width="100%" border="0" cellspacing="1" cellpadding="0" class="main_info status_item">
+									<tr>
+										<td align="center" class="device_item">
+											<table width="95%" border="0" cellspacing="1" cellpadding="0" class="device_item">
+												<tr id="4G_STATUS" class="off">
+													<td align="left" width="10">
+														<script type="text/javascript">
+															document.write(Common.status_4g);
+														</script>
+													</td>
+													<td align="right" class="main_info_value">
+														<table>
+															<tr>
+																<td class="main_info_value off" valign="middle"><img
+																		src="./images/space_line.png" id="4G_SIGNAL" height="15"
+																		class="off" /></td>
+																<td class="off">
+																	<div id="tips" width="25" class="off" onclick="showtips();">
+																		<font id="tip-content" class="off">
+																			<script type="text/javascript">
+																				document.write(Common.error_4g);
+																			</script>
+																		</font>
+																	</div>
+																</td>
+																<td>
+																	<script type="text/javascript">
+																		if (sim_status == "READY")
+																			dw(WiFi.Online);
+																		else
+																			dw(WiFi.Offline);
+																	</script>
+																</td>
+															</tr>
+														</table>
+													</td>
+												</tr>
+												<script type="text/javascript">
+													if (sim_status == "READY") {
+														signal_4g = parseInt(signal_4g);
+														if (signal_4g < 100) {
+															if (signal_4g < 8 || signal_4g == 8)
+																get_by_id("4G_SIGNAL").src = "./images/signal_1.png";
+															else if (signal_4g < 15 || signal_4g == 15)
+																get_by_id("4G_SIGNAL").src = "./images/signal_2.png";
+															else if (signal_4g < 20 || signal_4g == 20)
+																get_by_id("4G_SIGNAL").src = "./images/signal_3.png";
+															else if (signal_4g < 25 || signal_4g == 25)
+																get_by_id("4G_SIGNAL").src = "./images/signal_4.png";
+															else if (signal_4g < 31 || signal_4g == 31)
+																get_by_id("4G_SIGNAL").src = "./images/signal_5.png";
+			
+														} else {
+															if (signal_4g < 150 || signal_4g == 150)
+																get_by_id("4G_SIGNAL").src = "./images/signal_1.png";
+															else if (signal_4g < 160 || signal_4g == 160)
+																get_by_id("4G_SIGNAL").src = "./images/signal_2.png";
+															else if (signal_4g < 170 || signal_4g == 170)
+																get_by_id("4G_SIGNAL").src = "./images/signal_3.png";
+															else if (signal_4g < 180 || signal_4g == 180)
+																get_by_id("4G_SIGNAL").src = "./images/signal_4.png";
+															else if (signal_4g < 191 || signal_4g == 191)
+																get_by_id("4G_SIGNAL").src = "./images/signal_5.png";
+														}
+													} else {
+			
+														get_by_id("4G_SIGNAL").src = "./images/signal_no.png";
+														//get_by_id("tips").className="help-tip on";
+													}
+												</script>
+												<tr id="2G_SSID" class="off">
+													<td align="left" width="150">
+														<script type="text/javascript">
+															if (WiFiBand == "T")
+																document.write(Common.WiFi_SSID2);
+															else if (WiFiBand == "D")
+																document.write(Common.WiFi_SSID2);
+															else
+																document.write(Common.WiFi_SSID);
+														</script>
+													</td>
+													<td align="right" class="main_info_value">
+														<script type="text/javascript">
+															document.write(WIFISSID2);
+														</script>
+													</td>
+												</tr>
+												<tr id="2G_CHANNEL" class="off">
+													<td align="left" width="150">
+														<script type="text/javascript">
+															document.write(Common.Channel);
+														</script>
+													</td>
+													<td align="right" class="main_info_value">
+														<script type="text/javascript">
+															document.write(channel2)
+														</script>
+													</td>
+												</tr>
+												<tr id="5G_SSID" class="off">
+													<td align="left" width="150">
+														<script type="text/javascript">
+															document.write(Common.WiFi_SSID5);
+														</script>
+													</td>
+													<td align="right" class="main_info_value">
+														<script type="text/javascript">
+															document.write(WIFISSID5)
+														</script>
+													</td>
+												</tr>
+												<tr id="5G_CHANNEL" class="off">
+													<td align="left" width="150">
+														<script type="text/javascript">
+															document.write(Common.Channel);
+														</script>
+													</td>
+													<td align="right" class="main_info_value">
+														<script type="text/javascript">
+															document.write(channel5)
+														</script>
+													</td>
+												</tr>
+												<tr id="2G_400M_SSID" class="off">
+													<td align="left" width="150">
+														<script type="text/javascript">
+															document.write(WiFi.Wifi_name2)
+														</script>
+													</td>
+													<td align="right" class="main_info_value" style="word-wrap:normal;">
+														<script type="text/javascript">
+															document.write(WIFISSID2)
+														</script>
+													</td>
+												</tr>
+												<tr id="2G_CHANNEL_T" class="off">
+													<td align="left" width="150">
+														<script type="text/javascript">
+															document.write(Common.Channel);
+														</script>
+													</td>
+													<td align="right" class="main_info_value">
+														<script type="text/javascript">
+															document.write(channel2)
+														</script>
+													</td>
+												</tr>
+												<tr id="5G_867M_SSID" class="off">
+													<td align="left" width="150">
+														<script type="text/javascript">
+															document.write(WiFi.Wifi_name5)
+														</script>
+													</td>
+													<td align="right" class="main_info_value">
+														<script type="text/javascript">
+															document.write(WIFISSID5_1)
+														</script>
+													</td>
+												</tr>
+												<tr id="5G_CHANNEL_T" class="off">
+													<td align="left" width="150">
+														<script type="text/javascript">
+															document.write(Common.Channel);
+														</script>
+													</td>
+													<td align="right" class="main_info_value">
+														<script type="text/javascript">
+															document.write(channel5_1)
+														</script>
+													</td>
+												</tr>
+												<tr id="5G_1733M_SSID" class="off">
+													<td align="left" width="150">
+														<script type="text/javascript">
+															document.write(WiFi.Wifi_name5_2)
+														</script>
+													</td>
+													<td align="right" class="main_info_value">
+														<script type="text/javascript">
+															document.write(WIFISSID5_2)
+														</script>
+													</td>
+												</tr>
+												<tr id="TCHANNEL" class="off">
+													<td align="left" width="150">
+														<script type="text/javascript">
+															document.write(Common.Channel);
+														</script>
+													</td>
+													<td align="right" class="main_info_value">
+														<script type="text/javascript">
+															document.write(channel2 + " / " + channel5_1 + " / " + channel5_2)
+														</script>
+													</td>
+												</tr>
+												<tr id="4G_CHANNEL" class="off">
+													<td align="left" width="150">
+														<script type="text/javascript">
+															document.write(Common.Channel);
+														</script>
+													</td>
+													<td align="right" class="main_info_value">
+														<script type="text/javascript">
+															document.write(channel2 + " / " + channel5)
+														</script>
+													</td>
+												</tr>
+												<!--ap repeater is display-->
+												<tr id="connectto" class="off">
+													<td align="left" width="150">
+														<script type="text/javascript">
+															document.write(Common.Connect_to);
+														</script>
+													</td>
+													<td align="right" class="main_info_value">
+														<script type="text/javascript">
+															if (WiFiBand == "T") {
+																if (EnApClient2 == "0" && EnApClient5_1 == "0" && EnApClient5_2 == "0")
+																	document.write(Common.Connect_NO);
+																else if (EnApClient2 == "1" && EnApClient5_1 == "0" && EnApClient5_2 == "0")
+																	document.write(connecttossid2);
+																else if (EnApClient2 == "0" && EnApClient5_1 == "1" && EnApClient5_2 == "0")
+																	document.write(connecttossid5_1);
+																else if (EnApClient2 == "0" && EnApClient5_1 == "0" && EnApClient5_2 == "1")
+																	document.write(connecttossid5_2);
+															} else if (WiFiBand == "D") {
+																if (EnApClient2 == "0" && EnApClient5 == "0")
+																	document.write(Common.Connect_NO);
+																else if (EnApClient2 == "1" && EnApClient5 == "0")
+																	document.write(connecttossid2);
+																else if (EnApClient2 == "0" && EnApClient5 == "1")
+																	document.write(connecttossid5);
+															} else {
+																if (EnApClient2 == "0" && EnApClient5 == "0")
+																	document.write(Common.Connect_NO);
+																else if (EnApClient2 == "1" && EnApClient5 == "0")
+																	document.write(connecttossid2);
+															}
+														</script>
+													</td>
+												</tr>
+												<!--end ap repeater-->
+												<tr id="wan_constat" class="off">
+													<td align="left" width="150">
+														<script type="text/javascript">
+															document.write(Common.con_Status);
+														</script>
+													</td>
+													<td align="right" class="main_info_value" id="constatus"></td>
+												</tr>
+												<tr>
+													<td align="left" width="150">
+														<script type="text/javascript">
+															document.write(Common.Run_status);
+														</script>
+													</td>
+													<td align="right" class="main_info_value" id="uptime"></td>
+												</tr>
+												<tr class="without_border">
+													<td align="left" width="150">
+														<script type="text/javascript">
+															document.write(Update.Current_version);
+														</script>
+													</td>
+													<td align="right" class="main_info_value">
+														<script type="text/javascript">
+															document.write(fwversion);
+														</script>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td height="70" align="center"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td height="70" align="center"></td>
+			</tr>
+		</table>
+
+		<div id="div_loading" class="divloading off">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="div_table">
+				<tr>
+					<td height="200" align="center" valign="top"><img src="./images/icon_loader.gif" width="50" height="50" />
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="BotMenu" name="BotMenu" class="BotMenu">
+			<table width="96%" border="0" align="center" cellpadding="0" cellspacing="0">
+				<tr>
+					<td height="3" colspan="4"></td>
+				</tr>
+				<tr>
+					<td width="25%" class="pointer" align="center" valign="middle" onclick="click_loading('/main.shtml')">
+						<img src="./images/home_bg1.png" alt="" height="24" />
+					</td>
+					<td width="25%" class="pointer" align="center" valign="middle" onclick="click_loading('/wizard.shtml')">
+						<img src="./images/wizard_bg_no1.png" name="xd2" width="28" id="xd2" />
+					</td>
+					<td width="25%" class="pointer" align="center" valign="middle" onclick="click_loading('/wifi.shtml')">
+						<img src="./images/wifi_bg_no1.png" width="30" />
+					</td>
+					<td width="25%" class="pointer" align="center" valign="middle" onclick="click_loading('/setting.shtml')">
+						<img src="./images/setting_bg_no1.png" width="24" />
+					</td>
+				</tr>
+				<tr>
+					<td align="center" class="fb3" onclick="click_loading('/main.shtml')">
+						<script type="text/javascript">
+							dw(Common.Status);
+						</script>
+					</td>
+					<td align="center" class="fb1" onclick="click_loading('/wizard.shtml')">
+						<script type="text/javascript">
+							dw(Common.Wizard);
+						</script>
+					</td>
+					<td align="center" class="fb1" onclick="click_loading('wifi.shtml')">Wi-Fi</td>
+					<td align="center" class="fb1" onclick="click_loading('/setting.shtml')">
+						<script type="text/javascript">
+							dw(Common.Setup);
+						</script>
+					</td>
+				</tr>
+				<tr>
+					<td height="3" colspan="4"></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<script language="javascript">
+		displayAppMain();
+		get_by_id("div_loading").className ='divloading on';
+		window.setTimeout(function() {
+			get_by_id("div_loading").className ='divloading off';
+		}, 5000);
+		if(wanConnectionMode == "4G"){
+			get_by_id("img_router").src="images/net_4g.png";
+			get_by_id("net_mode").innerHTML=WAN.W_4g;
+			get_by_id("img_net4g_line").className="on";
+			get_by_id("img_net_line").className="off";
+			get_by_id("router_name").innerHTML=WAN.W_4g;
+		}
+		else{
+			get_by_id("img_net4g_line").className="off";
+			get_by_id("img_net_line").className="on";
+			if(wsMode==0) {
+				//get_by_id("apmode").className='on';
+				get_by_id("net_mode").innerHTML=Common.AP_mode;
+			} 
+			else if(wsMode==1){
+				get_by_id("net_mode").innerHTML=Common.Router_mode;
+				get_by_id("router_name").innerHTML=Common.Dsl;
+			}
+			else if(wsMode==2){
+				get_by_id("net_mode").innerHTML=Common.Client_mode;
+				get_by_id("img_net_line").src="images/space_line.png";
+				get_by_id("connectto").className='on';
+				get_by_id("wan_constat").className='on';
+			}
+			else if(wsMode==3){
+				get_by_id("net_mode").innerHTML=Common.Repeater_mode;
+				get_by_id("img_net_line").src="images/space_line.png";
+				get_by_id("connectto").className='on';
+				get_by_id("wan_constat").className='on';
+			}
+			else if(wsMode==4){
+				if(Model == "WN583A6")
+					get_by_id("net_mode").innerHTML=Common.Rep_mode;
+				else
+					get_by_id("net_mode").innerHTML=Common.Wisp_mode;
+				get_by_id("img_net_line").src="images/space_line.png";
+				get_by_id("connectto").className='on';
+				get_by_id("wan_constat").className='on';
+			}
+		}
+		get_by_id("logo").src=LOGO2;
+		//if(MeshMode==1)
+			//get_by_id("img_primary").src="images/"+Model+"-R-ok.png";
+		if(WiFiBand=="T")
+		{	
+			get_by_id("2G_400M_SSID").className="on";
+			get_by_id("5G_867M_SSID").className="on";
+			if(ModelType != "Mesh"){
+				get_by_id("5G_1733M_SSID").className="on";
+				get_by_id("TCHANNEL").className="on";
+			}
+			if(wsMode==0||wsMode==1){
+				get_by_id("2G_400M_SSID").className="on";
+				get_by_id("5G_867M_SSID").className="on";
+				
+				if(ModelType != "Mesh"){
+					get_by_id("5G_1733M_SSID").className="on";
+					get_by_id("TCHANNEL").className="on";
+				}
+				if(ModelType == "Mesh"){
+					get_by_id("2G_CHANNEL_T").className="on";
+					get_by_id("5G_CHANNEL_T").className="on";
+				}
+			}
+			else if(wsMode==2){
+				get_by_id("2G_400M_SSID").className="off";
+				get_by_id("5G_867M_SSID").className="off";
+				get_by_id("5G_1733M_SSID").className="off";
+				get_by_id("TCHANNEL").className="off";
+			}
+			else if(wsMode==3||wsMode==4){
+				get_by_id("2G_400M_SSID").className="on";
+				get_by_id("5G_867M_SSID").className="on";
+				if(ModelType != "Mesh"){
+					get_by_id("5G_1733M_SSID").className="on";
+					get_by_id("TCHANNEL").className="off";
+				}
+			}
+		}
+		if(WiFiBand=="D")
+		{	
+			//get_by_id("2G_400M_SSID").className="off";
+			//get_by_id("5G_867M_SSID").className="off";
+			if(wsMode==0||wsMode==1){
+				get_by_id("2G_SSID").className="on";
+				get_by_id("5G_SSID").className="on";
+				if(wanConnectionMode == "4G"){
+					get_by_id("4G_STATUS").className="on";
+					get_by_id("4G_CHANNEL").className="on";
+				}
+				else{
+					get_by_id("2G_CHANNEL").className="on";
+					get_by_id("5G_CHANNEL").className="on";
+				}
+			}
+			else if(wsMode==2){
+				get_by_id("2G_SSID").className="off";
+				get_by_id("2G_CHANNEL").className="off";
+				get_by_id("5G_SSID").className="off";
+				get_by_id("5G_CHANNEL").className="off";
+			}
+			else if(wsMode==3||wsMode==4){
+				get_by_id("2G_SSID").className="on";
+				get_by_id("2G_CHANNEL").className="off";
+				get_by_id("5G_SSID").className="on";
+				get_by_id("5G_CHANNEL").className="off";
+			}
+		}
+		if(wsMode == 0 || wsMode == 2 || wsMode == 3){
+			get_by_id("href_3").className="off";
+			get_by_id("href_1").href="#";
+			get_by_id("href_2").href="#";
+			get_by_id("href_3").href="#";
+			get_by_id("href_1").style="cursor:default";
+			get_by_id("href_2").style="cursor:default";
+			get_by_id("href_3").style="cursor:default";
+			
+		}
+		else{
+			get_by_id("href_3").className="on";
+			if(Request['app'] == '1'){
+				get_by_id("href_1").href="cli_control.shtml?app=2";
+				get_by_id("href_2").href="cli_control.shtml?app=2";
+				get_by_id("href_3").href="cli_control.shtml?app=2";
+			}
+			else{
+				get_by_id("href_1").href="cli_control.shtml";
+				get_by_id("href_2").href="cli_control.shtml";
+				get_by_id("href_3").href="cli_control.shtml";
+			}
+		}
+		
+		get_by_id("uptime").innerHTML=time;
+	
+		if(MeshMode==1){
+			fun_mesh_write(); //wirte MeshList
+			window.setTimeout(fun_mesh_fresh, 3000); //3s refresh Mesh Status
+			window.setTimeout(fun_MeshList, 4000); //5s show MeshList
+	
+			//window.setInterval(fun_mesh_fresh, 10000);  //wait 10s refresh Mesh Status
+			//window.setInterval(fun_mesh_write, 55000);	//wait 55s re-Write MeshList
+		}
+	</script>
+</body>
+
+</html>
